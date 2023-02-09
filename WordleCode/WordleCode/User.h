@@ -13,6 +13,7 @@
 class User
 {
 private:
+	int _tries;
 	std::string _UserName;
 	std::string _SecreteWord;
 	char* _SWC;
@@ -29,10 +30,12 @@ public:
 	std::string getWord()const;
 	char* getSWC()const;
 	SOCKET getSocket()const;
+	int getTries()const;
 
 	//setters
-	void setUserName(std::string userName);
-	void setWord(std::string path);
+	void setUserName(std::string const userName);
+	void setWord(std::string const path);
+	void addTry();
 
 };
 
