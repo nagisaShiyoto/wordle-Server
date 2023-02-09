@@ -11,6 +11,7 @@
 #define PORT 6969
 #define IP 127.0.0.1
 #define CONTINUE 'c'
+#define ERROR_CODE "ERROR123"
 
 void getName(SOCKET sr);
 
@@ -79,9 +80,19 @@ void getName(SOCKET sr)
 	std::string nm = name;
 	///////////////////get name//////////////////////////
 	//////////sends got name and created user////////////
-	User user(nm, sr);
-	std::cout << "user connected: " + user.getUserName() + "\n";
-	char con[2] = { CONTINUE, 0 };
-	send(sr, con, 2, 0);
+	try
+	{
+		char con[2] = { CONTINUE, 0 };
+		User user(nm, sr);
+		std::cout << "user connected: " + user.getUserName() + "\n";
+		send(sr, con, 2, 0);
+	}
+	catch (const char* msg)
+	{
+		char con[2] = { 'e',0 };
+		send(sr, con, 2, 0);
+	}
+		
+	
 	//////////sends got name and created user////////////
 }

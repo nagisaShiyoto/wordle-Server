@@ -15,7 +15,7 @@
 #define LEN_SPACE 5
 
 char* charLen(std::string str);
-void sendName(SOCKET cs);
+int sendName(SOCKET cs);
 
 int main()
 {
@@ -47,10 +47,13 @@ int main()
 	/////////////////////////create socket//////////////////////////////////
 
 	////////////////////////////communicate with server//////////////////////////////////
-	sendName(comu);
+	if (sendName(comu) == 1)
+	{
+		return 1;
+	}
 
 	////////////////////////////communicate with server//////////////////////////////////
-
+	return 0;
 
 }
 
@@ -77,7 +80,7 @@ char* charLen(std::string str)
 	return len;
 }
 
-void sendName(SOCKET cs)
+int sendName(SOCKET cs)
 {
 
 	std::string toSend = "";
@@ -90,4 +93,10 @@ void sendName(SOCKET cs)
 	send(cs, len, LEN_SPACE, 0);//send len
 	send(cs, toSend.c_str(), sizeof(toSend), 0);//send massage
 	recv(cs, con, 2, 0);//get authircation that got one:)
+	if (con[0] == 'e')
+	{
+		std::cout << "error in opening file,try moving the file 'word.txt'";
+		return 1;
+	}
+	return 0;
 }

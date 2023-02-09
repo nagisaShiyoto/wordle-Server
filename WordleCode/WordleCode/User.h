@@ -23,7 +23,7 @@ private:
 public:
 	
 	//constractor
-	User(std::string userName, SOCKET sock, std::string path = "../../words.txt");
+	User(std::string userName, SOCKET sock, std::string path = "words.txt");
 
 	//getters
 	std::string getUserName()const;

@@ -10,7 +10,7 @@ std::string User::getRandWord(std::string path)
         if (!file.is_open())
         {
             std::cout << "wrong file path:)";
-            word = ERROR_CODE;
+            throw ERROR_CODE;
         }
         int lineP = rand() % WORD_COUNT;
         for (int i = 0; i < lineP; i++)
@@ -64,10 +64,6 @@ void User::setUserName(std::string userName)
 void User::setWord(std::string path)
 {
     this->_SecreteWord = this->getRandWord(path);
-    while (this->_SecreteWord == ERROR_CODE)
-    {
-        this->_SecreteWord = this->getRandWord(path);
-    }
     //strdup=convert const char* to char*
     this->_SWC =_strdup( this->_SecreteWord.c_str());
 }
