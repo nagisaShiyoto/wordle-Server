@@ -33,9 +33,11 @@ public:
 	int getTries()const;
 
 	//setters
+	char* charLen(std::string str);
 	void setUserName(std::string const userName);
 	void setWord(std::string const path);
 	void addTry();
-
+	void manageMsg(int amount_of_tries);
+	std::string createResponse(std::string userMsg,char* charMsg,int msgL, int amount_of_tries);
 };
 

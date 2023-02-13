@@ -16,15 +16,20 @@
 
 char* charLen(std::string str);
 int sendName(SOCKET cs);
+int manageUser(SOCKET cs);
 
 int main()
 {
-	int iResult;
-	WSADATA wsaData;
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		std::cout << "WSAStartup failed: " << iResult << std::endl;
-		return 1;
+
+	{
+		int iResult;
+		WSADATA wsaData;
+		//MAKEWORD=the version of microsoft(2.2)
+		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (iResult != 0) {
+			std::cout << "WSAStartup failed: " << iResult << std::endl;
+			return 1;
+		}
 	}
 
 	/////////////////////////create socket//////////////////////////////////
@@ -51,7 +56,7 @@ int main()
 	{
 		return 1;
 	}
-
+	manageUser(comu);
 	////////////////////////////communicate with server//////////////////////////////////
 	return 0;
 
@@ -91,12 +96,50 @@ int sendName(SOCKET cs)
 	len = charLen(toSend);
 
 	send(cs, len, LEN_SPACE, 0);//send len
-	send(cs, toSend.c_str(), sizeof(toSend), 0);//send massage
+	send(cs, toSend.c_str()+0, sizeof(toSend)+1, 0);//send massage
 	recv(cs, con, 2, 0);//get authircation that got one:)
 	if (con[0] == 'e')
 	{
 		std::cout << "error in opening file,try moving the file 'word.txt'";
 		return 1;
 	}
+	return 0;
+}
+
+int manageUser(SOCKET cs)
+{
+	char status[5] = { 'o','k',0,0,0 };
+	//////////////////send gues/////////////////////
+	std::string gues;
+	char* len = { 0 };
+	std::cout << "what is your guess:\n";
+	std::cin >> gues;
+	len = charLen(gues);
+	send(cs, len, LEN_SPACE, 0);
+	send(cs, gues.c_str(), gues.length(), 0);
+	//////////////////send gues/////////////////////
+
+	/////////////////get responce///////////////////
+	int size = 0;
+	len[0] = 0;
+	while (!(len[0] >= '0' && len[0] <= '9'))
+	{
+		recv(cs, len, LEN_SPACE, 0);
+	}
+	size = atoi(len)+1;
+	char* msg = new char[size];
+	recv(cs, msg, size, 0);
+	std::string yourmam="";
+	for(int i=0;i<size;i++)
+	{
+		if (msg[i] != 0)
+		{
+			yourmam += msg[i];
+		}
+	}
+	std::cout <<yourmam;
+	//send it got it
+	send(cs, status, LEN_SPACE, 0);
+	/////////////////get responce///////////////////
 	return 0;
 }

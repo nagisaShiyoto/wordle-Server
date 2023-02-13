@@ -71,12 +71,11 @@ void getName(SOCKET sr)
 	char* len = new char[5];
 	if(recv(sr, len, 5, 0)==SOCKET_ERROR)
 		std::cout<<GetLastError();
-	size=atoi(len);
+	size=atoi(len)+1;
 	////////////////////get len//////////////////////////
 	///////////////////get name//////////////////////////
 	char* name = new char[size];
-	recv(sr, name, size, 0);
-	name[size] = 0;
+	recv(sr, name, size, NULL);
 	std::string nm = name;
 	///////////////////get name//////////////////////////
 	//////////sends got name and created user////////////
@@ -86,13 +85,15 @@ void getName(SOCKET sr)
 		User user(nm, sr);
 		std::cout << "user connected: " + user.getUserName() + "\n";
 		send(sr, con, 2, 0);
+	//////////sends got name and created user////////////
+		user.manageMsg(5);
 	}
 	catch (const char* msg)
 	{
 		char con[2] = { 'e',0 };
 		send(sr, con, 2, 0);
 	}
-		
 	
-	//////////sends got name and created user////////////
+	
+	
 }
