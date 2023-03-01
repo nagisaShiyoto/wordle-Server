@@ -35,9 +35,11 @@ public:
 	//setters
 	char* charLen(std::string str);
 	void setUserName(std::string const userName);
-	void setWord(std::string const path);
+	void setWord(std::string const path= "words.txt");
 	void addTry();
-	void manageMsg(int amount_of_tries);
+
+	void play(int amount_of_tries);
+	std::string manageMsg(int amount_of_tries);
 	std::string createResponse(std::string userMsg,char* charMsg,int msgL, int amount_of_tries);
 };
 

@@ -108,38 +108,75 @@ int sendName(SOCKET cs)
 
 int manageUser(SOCKET cs)
 {
-	char status[5] = { 'o','k',0,0,0 };
-	//////////////////send gues/////////////////////
-	std::string gues;
-	char* len = { 0 };
-	std::cout << "what is your guess:\n";
-	std::cin >> gues;
-	len = charLen(gues);
-	send(cs, len, LEN_SPACE, 0);
-	send(cs, gues.c_str(), gues.length(), 0);
-	//////////////////send gues/////////////////////
+	char doCon[2] = { 'c',0 };
+	char dontCon[2] = { 's',0 };
+	bool stop = false;
+	std::string con = "0";
+	do
+	{
+		char status[5] = { 'o','k',0,0,0 };
+		//////////////////send gues/////////////////////
+		std::string gues;
+		char* len = { 0 };
+		std::cout << "what is your guess:\n";
+		std::cin >> gues;
+		len = charLen(gues);
+		send(cs, len, LEN_SPACE, 0);
+		send(cs, gues.c_str(), gues.length(), 0);
+		//////////////////send gues/////////////////////
 
-	/////////////////get responce///////////////////
-	int size = 0;
-	len[0] = 0;
-	while (!(len[0] >= '0' && len[0] <= '9'))
-	{
-		recv(cs, len, LEN_SPACE, 0);
-	}
-	size = atoi(len)+1;
-	char* msg = new char[size];
-	recv(cs, msg, size, 0);
-	std::string yourmam="";
-	for(int i=0;i<size;i++)
-	{
-		if (msg[i] != 0)
+		/////////////////get responce///////////////////
+		int size = 0;
+		len[0] = 0;
+		while (!(len[0] >= '0' && len[0] <= '9'))
 		{
-			yourmam += msg[i];
+			recv(cs, len, LEN_SPACE, 0);
 		}
-	}
-	std::cout <<yourmam;
-	//send it got it
-	send(cs, status, LEN_SPACE, 0);
-	/////////////////get responce///////////////////
+		size = atoi(len) + 1;
+		char* msg = new char[size];
+		recv(cs, msg, size, 0);
+		std::string msgString = "";
+		for (int i = 0; i < size; i++)
+		{
+			if (msg[i] != 0)
+			{
+				msgString += msg[i];
+			}
+		}
+		std::cout<<std::endl << "--------------------------response--------------------------" << std::endl;
+		std::cout << msgString<<std::endl;
+		//send it got it
+		send(cs, status, LEN_SPACE, 0);
+		if (msgString == "out of tries try again later"||msgString=="you got the word")
+		{
+			//get the word
+			recv(cs, len, 5, 0);
+			char* word = new char[atoi(len)+1];
+			recv(cs, word, atoi(len), 0);
+			word[atoi(len)] = 0;
+			std::cout << "the word was: " << word << std::endl;
+			std::cout << std::endl << "--------------------------response--------------------------" << std::endl;
+			con = "0";
+			while (con != "f" && con != "t")
+			{
+				std::cout << std::endl << "do you want to start all over?(t/f) ";
+				std::cin >> con;
+			}
+			if (con == "f")
+			{
+				stop = true;
+				send(cs, dontCon, 2, 0);
+				std::cout << "bye!"<<std::endl;
+			}
+			else
+			{
+				stop = false;
+				send(cs, doCon, 2, 0);
+			}
+		}
+		std::cout << std::endl << "--------------------------response--------------------------" << std::endl;
+		
+		/////////////////get responce///////////////////
+	} while (!stop);
 	return 0;
 }

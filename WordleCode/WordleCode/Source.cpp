@@ -86,7 +86,7 @@ void getName(SOCKET sr)
 		std::cout << "user connected: " + user.getUserName() + "\n";
 		send(sr, con, 2, 0);
 	//////////sends got name and created user////////////
-		user.manageMsg(5);
+		user.play(5);
 	}
 	catch (const char* msg)
 	{

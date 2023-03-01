@@ -100,7 +100,26 @@ void User::addTry()
     this->_tries++;
 }
 
-void User::manageMsg(int amount_of_tries)
+void User::play(int amount_of_tries)
+{
+    std::string res = "";
+    char con[2]={'c',0};
+    while (con[0] = 'c')
+    {
+        this->setWord();
+        res = "";
+        this->_tries = 0;
+        while (res!="out of tries try again later"&&res!="you got the word")
+        {
+            res=this->manageMsg(amount_of_tries);
+        }
+        send(this->getSocket(), this->charLen(this->getWord()), 5, 0);
+        send(this->getSocket(), this->getSWC(), this->getWord().length(), 0);
+        recv(this->getSocket(), con, 2, 0);
+    }
+}
+
+std::string User::manageMsg(int amount_of_tries)
 {
     ////////////////////get msg/////////////////////////////
     int size = 0;
@@ -128,6 +147,7 @@ void User::manageMsg(int amount_of_tries)
     send(this->getSocket(), responce.c_str()+0, responce.length()+1, 0);
     recv(this->getSocket(), len, LEN_SPACE, 0);
     //////////////////send responce////////////////////////
+    return responce;
 }
 
 
@@ -135,10 +155,6 @@ void User::manageMsg(int amount_of_tries)
 std::string User::createResponse(std::string userMsg, char* charMsg,int msgL,int amount_of_tries)
 {
     int rightCounter = 0;
-    if (amount_of_tries <= this->getTries())
-    {
-        return "out of tries try again later";
-    }
     std::string msg = "spotOn: ";
     std::string close = "";
     for (int i = 0; i < this->getWord().length(); i++)
@@ -166,7 +182,11 @@ std::string User::createResponse(std::string userMsg, char* charMsg,int msgL,int
     //chek if got right:)
     if (rightCounter == this->getWord().length())
     {
-        return this->getWord();
+        return "you got the word";
+    }
+    if (amount_of_tries <= this->getTries())
+    {
+        return "out of tries try again later";
     }
     msg += "\nnotPlace: ";
     msg += close+"\nthereIsnt: ";
