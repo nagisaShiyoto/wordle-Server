@@ -24,7 +24,7 @@ public:
 	
 	//constractor
 	User(std::string userName, SOCKET sock, std::string path = "words.txt");
-
+	~User();
 	//getters
 	std::string getUserName()const;
 	std::string getWord()const;

@@ -5,7 +5,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 #pragma warning(disable : 4996)
 ////////////////////include winsock2///////////////////
-
+#include <fstream>
 #include <string>
 #include <vector>
 #include <windows.h>
@@ -13,10 +13,12 @@
 #define PORT 6969
 #define IP "127.0.0.1"
 #define LEN_SPACE 5
+#define WORD_COUNT 12972
 
 char* charLen(std::string str);
 int sendName(SOCKET cs);
 int manageUser(SOCKET cs);
+bool checkMsg(std::string answer);
 
 int main()
 {
@@ -58,6 +60,7 @@ int main()
 	}
 	manageUser(comu);
 	////////////////////////////communicate with server//////////////////////////////////
+	closesocket(comu);
 	return 0;
 
 }
@@ -120,6 +123,11 @@ int manageUser(SOCKET cs)
 		char* len = { 0 };
 		std::cout << "what is your guess:\n";
 		std::cin >> gues;
+		while (!checkMsg(gues))
+		{
+			std::cout << "have to be a 5 letter word:), try again:" << std::endl;
+			std::cin>>gues;
+		}
 		len = charLen(gues);
 		send(cs, len, LEN_SPACE, 0);
 		send(cs, gues.c_str(), gues.length(), 0);
@@ -173,10 +181,33 @@ int manageUser(SOCKET cs)
 				stop = false;
 				send(cs, doCon, 2, 0);
 			}
+			delete[] word;
 		}
 		std::cout << std::endl << "--------------------------response--------------------------" << std::endl;
 		
 		/////////////////get responce///////////////////
+		delete[] msg;
 	} while (!stop);
+
 	return 0;
+}
+
+bool checkMsg(std::string answer)
+{
+	std::ifstream file;
+	file.open("words.txt");
+	if (!file.is_open())
+	{
+		std::cout << "error";
+	}
+	std::string msg = "";
+	for(int i=0;i<WORD_COUNT;i++)
+	{
+		std::getline(file, msg);
+		if (msg == answer)
+		{
+			return true;
+		}
+	}
+	return false;
 }

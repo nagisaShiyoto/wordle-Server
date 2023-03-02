@@ -35,6 +35,15 @@ User::User(std::string userName, SOCKET sock, std::string path)
     this->_userSocket = sock;
 }
 
+User::~User()
+{
+    delete[] this->_SWC;
+    closesocket(this->_userSocket);
+    std::cout << std::endl << "--------------------------response--------------------------" << std::endl;
+    std::cout <<"user: "<<this->getUserName()<< " disconnected" << std::endl;
+    std::cout << std::endl << "--------------------------response--------------------------" << std::endl;
+}
+
 std::string User::getUserName() const
 {
     return this->_UserName;
@@ -104,7 +113,7 @@ void User::play(int amount_of_tries)
 {
     std::string res = "";
     char con[2]={'c',0};
-    while (con[0] = 'c')
+    while (con[0] == 'c')
     {
         this->setWord();
         res = "";
